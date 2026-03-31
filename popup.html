@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Suno Downloader</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 12px;
+        width: 380px;
+      }
+
+      .toolbar,
+      .batch-actions,
+      .settings {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+
+      .settings label {
+        font-size: 12px;
+      }
+
+      input[type="number"] {
+        width: 64px;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      #status,
+      #queueStatus {
+        font-size: 12px;
+        color: #444;
+        margin-bottom: 8px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 320px;
+        overflow: auto;
+      }
+
+      li {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 8px;
+        align-items: center;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 8px;
+        margin-bottom: 6px;
+      }
+
+      .title {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .meta {
+        font-size: 11px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button id="refresh">刷新歌曲</button>
+      <button id="selectAll">全選</button>
+      <button id="invert">反選</button>
+    </div>
+
+    <div class="settings">
+      <label>並發 <input id="concurrency" type="number" min="1" max="5" value="2" /></label>
+      <label>重試 <input id="maxRetries" type="number" min="0" max="5" value="2" /></label>
+      <label>節流ms <input id="throttleMs" type="number" min="100" max="2000" value="300" /></label>
+    </div>
+
+    <div class="batch-actions">
+      <button id="startBatch">開始批量下載</button>
+      <button id="downloadFirst">下載第一首</button>
+    </div>
+
+    <div id="status">等待讀取...</div>
+    <div id="queueStatus">隊列狀態：--</div>
+    <ul id="songs"></ul>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
