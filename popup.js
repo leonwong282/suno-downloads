@@ -76,6 +76,13 @@ async function loadDownloadedIds() {
   downloadedSet = new Set(response?.downloadedSongIds || []);
 }
 
+async function ensureContentScript(tabId) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ["content-script.js"]
+  });
+}
+
 async function loadSongs() {
   const tabId = await getActiveTabId();
   if (!tabId) {
@@ -85,7 +92,19 @@ async function loadSongs() {
 
   await loadDownloadedIds();
 
-  const response = await chrome.tabs.sendMessage(tabId, { type: "GET_SONGS" });
+  let response = null;
+  try {
+    response = await chrome.tabs.sendMessage(tabId, { type: "GET_SONGS" });
+  } catch (_error) {
+    try {
+      await ensureContentScript(tabId);
+      response = await chrome.tabs.sendMessage(tabId, { type: "GET_SONGS" });
+    } catch (injectError) {
+      setStatus(`抓取失敗：無法連接頁面腳本（${injectError?.message || "unknown"}）`);
+      return;
+    }
+  }
+
   if (!response?.ok) {
     setStatus(`抓取失敗：${response?.error || "unknown"}`);
     return;
